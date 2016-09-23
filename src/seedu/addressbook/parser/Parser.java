@@ -2,7 +2,6 @@ package seedu.addressbook.parser;
 
 import seedu.addressbook.commands.*;
 import seedu.addressbook.data.exception.IllegalValueException;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +26,8 @@ public class Parser {
                     + "(?<tagArguments>(?: t/[^/]+)*)"); // variable number of tags
 
 
+    public static String sortBy = "";
+    
     /**
      * Signals that the user input could not be parsed.
      */
@@ -72,6 +73,11 @@ public class Parser {
                 return prepareFind(arguments);
 
             case ListCommand.COMMAND_WORD:
+            	if (arguments.isEmpty()) {
+            		sortBy = "None";
+            	} else {
+            		sortBy = arguments.substring(0, 1).toUpperCase() + arguments.substring(1).toLowerCase();
+            	}
                 return new ListCommand();
 
             case ViewCommand.COMMAND_WORD:
@@ -83,7 +89,7 @@ public class Parser {
             case ExitCommand.COMMAND_WORD:
                 return new ExitCommand();
 
-            case HelpCommand.COMMAND_WORD: // Fallthrough
+            case HelpCommand.COMMAND_WORD: // Fall through
             default:
                 return new HelpCommand();
         }
