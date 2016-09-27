@@ -27,6 +27,8 @@ public class Parser {
                     + "(?<tagArguments>(?: t/[^/]+)*)"); // variable number of tags
 
 
+    public static String sortBy = "";
+    
     /**
      * Signals that the user input could not be parsed.
      */
@@ -72,7 +74,7 @@ public class Parser {
                 return prepareFind(arguments);
 
             case ListCommand.COMMAND_WORD:
-                return new ListCommand();
+                return prepareList(arguments);
 
             case ViewCommand.COMMAND_WORD:
                 return prepareView(arguments);
@@ -83,7 +85,7 @@ public class Parser {
             case ExitCommand.COMMAND_WORD:
                 return new ExitCommand();
 
-            case HelpCommand.COMMAND_WORD: // Fallthrough
+            case HelpCommand.COMMAND_WORD: // Fall through
             default:
                 return new HelpCommand();
         }
@@ -142,6 +144,28 @@ public class Parser {
         return new HashSet<>(tagStrings);
     }
 
+
+    private Command prepareList(String args) {
+        args = args.trim();
+        String[] tokens = args.split(" ");
+        if (tokens.length != 1) {
+            // TODO: add proper message
+            return new IncorrectCommand("Placeholder bad list args");
+        }
+
+        String arg = tokens[0].toLowerCase().trim();
+        ListCommand.SortField chosenField = null;
+        for (ListCommand.SortField field : ListCommand.SortField.values()) {
+            if (arg.equals(field.name)) {
+                chosenField = field;
+                break;
+            }
+        }
+
+        return chosenField == null
+                ? new IncorrectCommand("Placeholder bad list args")
+                : new ListCommand(chosenField);
+    }
 
     /**
      * Parses arguments in the context of the delete person command.
