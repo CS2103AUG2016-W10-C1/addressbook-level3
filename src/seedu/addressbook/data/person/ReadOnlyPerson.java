@@ -1,18 +1,13 @@
 package seedu.addressbook.data.person;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
 import seedu.addressbook.data.tag.Tag;
 import seedu.addressbook.data.tag.UniqueTagList;
-import seedu.addressbook.parser.Parser;
 
 /**
  * A read-only immutable interface for a Person in the address book.
  * Implementations should guarantee: details are present and not null, field values are validated.
  */
-public interface ReadOnlyPerson extends Comparable<ReadOnlyPerson> {
+public interface ReadOnlyPerson {
 
     Name getName();
     Phone getPhone();
@@ -25,15 +20,6 @@ public interface ReadOnlyPerson extends Comparable<ReadOnlyPerson> {
      */
     UniqueTagList getTags();
 
-    public static final String[] sortByArray = {
-    		"None",
-    		"Address",
-    		"Email",
-    		"Name",
-    		"Phone"
-    		};
-    public static final HashMap<String, String> methodMap = new HashMap<>();
-    
     /**
      * Returns true if the values inside this object is same as those of the other (Note: interfaces cannot override .equals)
      */
@@ -96,28 +82,5 @@ public interface ReadOnlyPerson extends Comparable<ReadOnlyPerson> {
         }
         return builder.toString();
     }
-    
-    public default int compareTo(ReadOnlyPerson otherPerson) {
-    	for (int i = 0; i < sortByArray.length; i++) {
-    		methodMap.put(sortByArray[i], "get" + sortByArray[i]);
-    	}
-		if (!Parser.sortBy.equals("None")) {
-			Method method;
-			try {
-				method = this.getClass().getMethod(methodMap.get(Parser.sortBy));
-				String personData = (String) method.invoke(this);
-				String otherPersonData = (String) method.invoke(otherPerson);
-				return personData.compareTo(otherPersonData);
-			} catch (NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
-		}
-		return 0;
-	}
+
 }
